@@ -130,24 +130,38 @@ function getData(url) {
   return JSON.parse(ajax.response);
 }
 
-var newsFeed = getData(NEWS_URL);
-var ul = document.createElement('ul');
-window.addEventListener('hashchange', function () {
-  var id = location.hash.substr(1);
-  var newsContent = getData(CONTENT_URL.replace('13831370', id));
-  var title = document.createElement('h1');
-  title.innerHTML = newsContent.title;
-  content.appendChild(title);
-});
+function newsFeed() {
+  var newsList = [];
+  var newsFeed = getData(NEWS_URL);
+  newsList.push('<ul>');
 
-for (var i = 0; i < 10; i++) {
-  var div = document.createElement('div');
-  div.innerHTML = "\n    <li>\n      <a href=\"#".concat(newsFeed[i].id, "\">").concat(newsFeed[i].title, " (").concat(newsFeed[i].comments_count, ")</a>\n    </li>\n  ");
-  ul.appendChild(div.firstElementChild);
+  for (var i = 0; i < 10; i++) {
+    var div = document.createElement('div');
+    newsList.push("\n      <li>\n        <a href=\"#".concat(newsFeed[i].id, "\">\n        ").concat(newsFeed[i].title, " (").concat(newsFeed[i].comments_count, ")\n        </a>\n      </li>\n    "));
+  }
+
+  newsList.push('</ul>');
+  container.innerHTML = newsList.join('');
 }
 
-container.appendChild(ul);
-container.appendChild(content);
+function newsDetail() {
+  var id = location.hash.substr(1);
+  var newsContent = getData(CONTENT_URL.replace('13831370', id));
+  container.innerHTML = "\n   <h1>".concat(newsContent.title, "</h1>\n\n   <div>\n    <a href=\"#\">\uBAA9\uB85D\uC73C\uB85C </a>\n   </div>\n  ");
+}
+
+function routuer() {
+  var routePath = location.hash;
+
+  if (routePath === '') {
+    newsFeed();
+  } else {
+    newsDetail();
+  }
+}
+
+window.addEventListener('hashchange', routuer);
+routuer();
 },{}],"../../.nvm/versions/node/v16.2.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -176,7 +190,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54432" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49763" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
