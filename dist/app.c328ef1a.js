@@ -122,7 +122,10 @@ var container = document.getElementById('root');
 var ajax = new XMLHttpRequest();
 var content = document.createElement('div');
 var NEWS_URL = 'https://api.hnpwa.com/v0/news/1.json';
-var CONTENT_URL = 'https://api.hnpwa.com/v0/item/13831370.json';
+var CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
+var store = {
+  currentPage: 1
+};
 
 function getData(url) {
   ajax.open('Get', url, false);
@@ -131,29 +134,33 @@ function getData(url) {
 }
 
 function newsFeed() {
-  var newsList = [];
   var newsFeed = getData(NEWS_URL);
+  var newsList = [];
   newsList.push('<ul>');
 
-  for (var i = 0; i < 10; i++) {
+  for (var i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
     var div = document.createElement('div');
-    newsList.push("\n      <li>\n        <a href=\"#".concat(newsFeed[i].id, "\">\n        ").concat(newsFeed[i].title, " (").concat(newsFeed[i].comments_count, ")\n        </a>\n      </li>\n    "));
+    newsList.push("\n      <li>\n        <a href=\"#/show/".concat(newsFeed[i].id, "\">\n        ").concat(newsFeed[i].title, " (").concat(newsFeed[i].comments_count, ")\n        </a>\n      </li>\n    "));
   }
 
   newsList.push('</ul>');
+  newsList.push("\n  <div>\n    <a href=\"#/page/".concat(store.currentPage > 1 ? store.currentPage - 1 : 1, "\">\uC774\uC804 \uD398\uC774\uC9C0</a>\n    <a href=\"#/page/").concat(store.currentPage + 1, "\">\uB2E4\uC74C \uD398\uC774\uC9C0</a>\n  </div>\n  "));
   container.innerHTML = newsList.join('');
 }
 
 function newsDetail() {
-  var id = location.hash.substr(1);
-  var newsContent = getData(CONTENT_URL.replace('13831370', id));
-  container.innerHTML = "\n   <h1>".concat(newsContent.title, "</h1>\n\n   <div>\n    <a href=\"#\">\uBAA9\uB85D\uC73C\uB85C </a>\n   </div>\n  ");
+  var id = location.hash.substr(7);
+  var newsContent = getData(CONTENT_URL.replace('@id', id));
+  container.innerHTML = "\n   <h1>".concat(newsContent.title, "</h1>\n\n   <div>\n    <a href=\"#/page/").concat(store.currentPage, "\">\uBAA9\uB85D\uC73C\uB85C </a>\n   </div>\n  ");
 }
 
 function routuer() {
   var routePath = location.hash;
 
   if (routePath === '') {
+    newsFeed();
+  } else if (routePath.indexOf('#/page/') >= 0) {
+    store.currentPage = Number(routePath.substr(7));
     newsFeed();
   } else {
     newsDetail();
@@ -190,7 +197,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49763" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59889" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
